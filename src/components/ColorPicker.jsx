@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from "styled-components"
 import "./colorPicker.css";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -30,11 +30,21 @@ function ColorPicker() {
     "#E6E6FA", "#E9967A", "#EE82EE", "#EEE8AA", "#F08080", "#F0E68C", "#F0F8FF", "#F0FFF0", "#009900", "#F4A460",
     "#F5DEB3", "#F5F5DC", "#F5F5F5", "#F5FFFA", "#F8F8FF", "#FA8072", "#FAEBD7", "#FAF0E6", "#FAFAD2", "#000000"]);
 
-  const [circlePickerColors, setCirclePickerColors] = useState(["#f44336", "#e91e63", "#9c27b0", "#673ab7", "#3f51b5", "#2196f3", "#03a9f4", "#00bcd4", "#009688", "rgba(0, 0, 0, 0.15)"]);
+  const [circlePickerColors, setCirclePickerColors] = useState(["#f44336", "#e91e63", "#9c27b0", "#673ab7", "#3f51b5", "#999999", "#ffd9f4", "#00bcd4", "#009688", "rgba(0, 0, 0, 0.15)"]);
 
   const [opacity, setOpacity] = useState(1);
 
   const [currentColor, setCurrentColor] = useState("rgba(16,16,16,1)");
+
+  const [visitedColors, setVisitedColors] = useState([]);
+
+  const [mostRecentColorLoadCount, setMostRecentColorLoadCount] = useState(0);
+
+  useEffect((
+  ) => {
+    console.log("visitedColors  :", visitedColors);
+
+  }, [visitedColors]);
 
   const handleColorChoice = (color, event) => {
     console.log("color : ", color);
@@ -46,9 +56,8 @@ function ColorPicker() {
       console.log("newOpacityAppliedColor : ", newOpacityAppliedColor);
       setCurrentColor(newOpacityAppliedColor);
     }
-
     setPickerAttributes({ ...pickerAttributes, hex: color });
-
+    setVisitedColors([...visitedColors, color]);
   }
 
   const handleOpacityChange = (event) => {
@@ -58,6 +67,30 @@ function ColorPicker() {
     const rgbValue = hexRgb(pickerAttributes.hex);
     const newOpacityAppliedColor = `rgba(${rgbValue.red},${rgbValue.green},${rgbValue.blue},${newOpacity})`;
     setCurrentColor(newOpacityAppliedColor);
+  }
+
+  const handleLoadMostRecentColor = () => {
+    if (visitedColors.length == 0 || mostRecentColorLoadCount == visitedColors.length)
+      return;
+
+    const originalVisitedColors = [...circlePickerColors];
+    let previousColor = originalVisitedColors[0];
+    let newColor;
+    for (let i = 1; i < 9; i++) {
+      newColor = originalVisitedColors[i];
+      originalVisitedColors[i] = previousColor;
+      previousColor = newColor;
+    }
+
+
+    originalVisitedColors[0] = visitedColors[mostRecentColorLoadCount];
+    originalVisitedColors[9] = "rgba(0, 0, 0, 0.15)";
+
+    setCirclePickerColors(originalVisitedColors);
+    console.log("mostRecentColorLoadCount : ", mostRecentColorLoadCount);
+    const currentColorLoadCount = mostRecentColorLoadCount;
+    setMostRecentColorLoadCount(currentColorLoadCount + 1);
+
   }
 
   return (
@@ -106,7 +139,7 @@ function ColorPicker() {
             circlePickerColors.map((color, index) => {
               if (color === "rgba(0, 0, 0, 0.15)")
                 return (
-                  <AddRecentColor onClick={(e) => handleColorChoice(color, e)} key={index} background={color}>
+                  <AddRecentColor onClick={() => handleLoadMostRecentColor()} key={index} background={color}>
                     +
                   </AddRecentColor>
                 )
