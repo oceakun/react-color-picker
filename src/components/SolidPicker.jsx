@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import styled from "styled-components"
-import "./colorPicker.css";
-import AddCircleIcon from '@mui/icons-material/AddCircle';
 import hexRgb from 'hex-rgb';
-import checkeredBackground from "../assets/checkered_background.png";
 
-function ColorPicker() {
+function SolidPicker(props) {
   const [pickerAttributes, setPickerAttributes] = useState({
     displayColorPicker: false,
     color: {
@@ -42,18 +39,18 @@ function ColorPicker() {
 
   useEffect((
   ) => {
-    console.log("visitedColors  :", visitedColors);
-
-  }, [visitedColors]);
+    // console.log("currentColor  :", currentColor);
+    props.setColorPicked(currentColor);
+  }, [currentColor]);
 
   const handleColorChoice = (color, event) => {
-    console.log("color : ", color);
+    // console.log("color : ", color);
 
     if (opacity <= 1) {
-      console.log("opacity : ", opacity);
+      // console.log("opacity : ", opacity);
       const rgbValue = hexRgb(color);
       const newOpacityAppliedColor = `rgba(${rgbValue.red},${rgbValue.green},${rgbValue.blue},${opacity})`;
-      console.log("newOpacityAppliedColor : ", newOpacityAppliedColor);
+      // console.log("newOpacityAppliedColor : ", newOpacityAppliedColor);
       setCurrentColor(newOpacityAppliedColor);
     }
     setPickerAttributes({ ...pickerAttributes, hex: color });
@@ -87,7 +84,7 @@ function ColorPicker() {
     originalVisitedColors[9] = "rgba(0, 0, 0, 0.15)";
 
     setCirclePickerColors(originalVisitedColors);
-    console.log("mostRecentColorLoadCount : ", mostRecentColorLoadCount);
+    // console.log("mostRecentColorLoadCount : ", mostRecentColorLoadCount);
     const currentColorLoadCount = mostRecentColorLoadCount;
     setMostRecentColorLoadCount(currentColorLoadCount + 1);
 
@@ -119,18 +116,14 @@ function ColorPicker() {
         }
       </GithubColorsWrapper>
 
-      <div className="range">
-        <input id="range" type="range" step="0.01" min="0" max="1" onChange={handleOpacityChange} value={opacity} />
-      </div>
+      {/* <OpacitySlider> */}
+      <OpacitySlider id="range" type="range" step="0.01" min="0" max="1" onChange={handleOpacityChange} value={opacity} />
+      {/* </OpacitySlider> */}
 
-      <hr />
       <ChosenColorTextualDetails>
         <p style={{ color: "black" }}>Hex</p>
         <span style={{ color: "black" }}>{pickerAttributes.hex}</span>
       </ChosenColorTextualDetails>
-      <hr />
-
-      {/* <RangeSlider></RangeSlider> */}
 
       <CurrentAndRecentColors>
         <ColorChosen colorChosen={`${currentColor}`} />
@@ -156,16 +149,14 @@ function ColorPicker() {
   )
 }
 
-export default ColorPicker
+export default SolidPicker
 
 const PickerWrapper = styled.div`
   display:flex;
   flex-flow:column nowrap;
   justify-content:center;
   align-items:center;
-  padding:10px;
-  background-color:white;
-  border-radius: 10px;
+  gap:10px;
   > hr{
     width:100%;
     border: 1.5px solid rgba(0, 0, 0, 0.12);
@@ -178,6 +169,8 @@ const ChosenColorTextualDetails = styled.div`
   justify-content:space-around;
   align-items:center;
   gap:201px;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.12);
   > span{
     box-sizing: border-box;
     width: 78px;
@@ -185,10 +178,16 @@ const ChosenColorTextualDetails = styled.div`
     border: 1px solid rgba(58, 135, 253, 0.38);
     border-radius: 6px;
     padding:1px;
-  }
+  
 `;
 
-const ColorChosen = styled.div`
+const ColorChosen = styled.div
+// .attrs(props => ({
+//   style: {
+//     background: props.colorChosen,
+//   },
+// }))
+`
   width: 65px;
   height:65px;
   border-radius: 10px;
@@ -202,7 +201,47 @@ const GithubColorsWrapper = styled.div`
   height: 245px;
   border:1px solid transparent;
   border-radius: 15px;
+  margin:10px 0;
     `;
+
+const OpacitySlider = styled.input`
+    -webkit-appearance: none;
+    appearance: none;
+    width: 303px;
+    cursor: pointer;
+    outline: none;
+    border-radius: 15px;
+    height: 7px;
+    background-color: rgb(131, 122, 122);
+    background-image:
+        linear-gradient(45deg, #ccc 25%, transparent 25%),
+        linear-gradient(-45deg, #ccc 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #ccc 75%),
+        linear-gradient(-45deg, transparent 75%, #ccc 75%);
+    background-size: 5px 5px;
+    background-position: 0 0, 0 2.5px, 2.5px -2.5px, -2.5px 0px;
+    margin:10px 0 12px 0;
+
+    &::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        height: 15px;
+        width: 15px;
+        background-color: rgb(80, 78, 77);
+        border-radius: 50%;
+        border: 5px solid white;
+        transition: .2s ease-in-out;
+    }
+
+    &::-moz-range-thumb {
+        height: 18px;
+        width: 18px;
+        background-color: rgb(80, 78, 77);
+        border-radius: 50%;
+        border: 4px solid rgb(255, 255, 255);
+        transition: .2s ease-in-out;
+    }
+  `;
 
 const GithubColorSquare = styled.span`
   width: 23.25px;
@@ -221,7 +260,6 @@ const CurrentAndRecentColors = styled.div`
   justify-content:center;
   align-items:center;
   gap:30px;
-  margin-top:15px;
 `;
 
 const RecentColorsWrapper = styled.div`
@@ -232,22 +270,22 @@ const RecentColorsWrapper = styled.div`
   height: 65px;
   border:1px solid transparent;
   border-radius: 15px;
-  // padding:0px 10px;
-  gap:10px 18.7px;
-  // background:black;
+  gap:10px 20.5px;
     `;
 
 const AddRecentColor = styled.div`
-  width: 25px;
-  height: 25px;
+  width: 23px;
+  height: 23px;
   background: ${(props) => props.background};
   border:1px solid ${(props) => props.background};
+  color:rgba(60, 60, 67, 0.6);
   border-radius:50%;
   &:hover{
-    border:1px solid white;
     cursor:pointer;
+    background: rgba(0, 0, 0, 0.55);
+    border:1px solid rgba(0, 0, 0, 1);
+    color:rgba(0, 0, 0, 1);
   }
-  color:rgba(60, 60, 67, 0.6);
 
   // >p{
   //   position:absolute;
@@ -273,22 +311,11 @@ const ColorCircle = styled.span`
   width: 25px;
   height: 25px;
   background: ${(props) => props.background};
-  border:1px solid ${(props) => props.background};
   border-radius:50%;
   &:hover{
-    border:1px solid white;
     cursor:pointer;
+    box-shadow: inset 0 0 0 3px ${(props) => props.background},inset 0 0 0 5px white;
   }
-`;
-
-
-const RangeSlider = styled.input.attrs(props => ({
-  // we can define static props
-  type: "range",
-}))`
-  color: #BF4F74;
-  font-size: 1em;
-  border-radius: 3px;
 `;
 
 // const Swatch = styled.div`
