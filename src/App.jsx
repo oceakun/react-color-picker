@@ -9,9 +9,9 @@ function App() {
   const [colorPicked, setColorPicked] = useState("#101010");
   const [gradientPicked, setGradientPicked] = useState([]);
 
-  useEffect(()=>{
-    console.log("gradientPicked : ", gradientPicked);
-  },[gradientPicked]);
+  useEffect(() => {
+    // console.log("gradientPicked : ", gradientPicked);
+  }, [gradientPicked]);
 
   return (
     <AppContainer>
@@ -46,13 +46,6 @@ const Picker = styled.div`
   background-color:white;
   border-radius: 10px;
   margin-top:10px;
-  
-// background: linear-gradient(180deg, 
-//   #EC1F1F 1.04%, 
-//   #F957AE 26.56%, 
-//   rgba(121, 113, 214, 0.716312) 50%, 
-//   rgba(137, 245, 239, 0.304965) 73.96%, 
-//   rgba(255, 255, 255, 0) 100%);
 `;
 
 const ColorOutputs = styled.div`
@@ -74,7 +67,7 @@ const GradientSection = styled.div`
   width: 213px;
   height:100px;
   border-radius: 10px;
-  background: linear-gradient(${(props) => props.background});
+  background: linear-gradient(90deg, ${(props) => props.background});
 `;
 
 const Header = styled.div`
