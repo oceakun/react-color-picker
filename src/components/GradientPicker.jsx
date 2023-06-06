@@ -8,44 +8,31 @@ function GradientPicker(props) {
     const [currentPost, setCurrentPost] = useState();
     const [dropperSelected, setDropperSelected] = useState();
     const [dropperColorAndPost, setDropperColorAndPost] = useState([{ post: "0", color: "rgba(16,16,16,0)" }, { post: "100", color: "rgba(16,16,16,1)" }]);
-    const [gradientValue, setGradientvalue] = useState("");
+    const [gradientString, setGradientString] = useState("rgba(16,16,16,0) 0%,rgba(16,16,16,1) 100%");
 
     useEffect(() => {
-        props.setGradientPicked(dropperColorAndPost);
-        // const deepCpy = [...dropperColorAndPost];
-        // const swap = (in1, in2) => {
-        //     const temp = deepCpy[in2];
-        //     deepCpy[in2] = deepCpy[in1];
-        //     deepCpy[in1] = temp;
-        // }
 
-        // for (let i = 0; i < deepCpy.length; i++) {
-        //     for (let j = i; j < deepCpy.length; j++) {
-        //         if (deepCpy[i].post > deepCpy[j].post)
-        //             swap(i, j);
-        //     }
-        // }
+        const gradientValuesArray = [];
+        const oldDropperColorAndPostList = [...dropperColorAndPost];
 
-        // setDropperColorAndPost(deepCpy);
-
-        const gradientString = "";
-        dropperColorAndPost.map((shade, i) => {
-            console.log("shade : ", shade);
-            const subString = `${shade.color} ${shade.post}% ,`;
-            gradientString.concat(subString);
-            console.log("gradientString : ", gradientString);
+        oldDropperColorAndPostList.map((shade, i) => {
+            if (shade.color != "") {
+                const subString = `${shade.color} ${shade.post}%`;
+                gradientValuesArray.push(subString);
+            }
         });
-        console.log("gradientString : ", gradientString);
-        setGradientvalue(gradientString);
 
+        const gradientString = gradientValuesArray.join();
+        console.log("gradientString (output): ", gradientString);
+        setGradientString(gradientString);
+        
+        props.setGradientPicked(gradientString);
     }, [dropperColorAndPost]);
 
     const handleDropperPosition = (event) => {
         const newPost = event.target.value;
         const newDropperObject = { post: newPost, color: "" };
-        // console.log("newDropperObject : ", newDropperObject);
         const oldDropperColorAndPostList = [...dropperColorAndPost];
-        // console.log("oldDropperColorAndPostList : ", oldDropperColorAndPostList);
         const newDropperColorAndPostList = arrangeDroppers(newDropperObject, oldDropperColorAndPostList);
         console.log("newDropperColorAndPostList : ", newDropperColorAndPostList);
         setDropperColorAndPost(newDropperColorAndPostList);
@@ -85,6 +72,7 @@ function GradientPicker(props) {
         const deepCopyDropperColorAndPost = [...dropperColorAndPost];
         deepCopyDropperColorAndPost.splice(removeIndex, 1);
         setDropperColorAndPost(deepCopyDropperColorAndPost);
+
     }
 
     const handleDropperSelection = (dropper, e) => {
@@ -93,17 +81,26 @@ function GradientPicker(props) {
     }
 
     const arrangeDroppers = (newDropperObject, oldDropperColorAndPostList) => {
-        console.log("newDropperObject : ", newDropperObject.post);
+
+        console.log("arrangeDroppers, oldDropperColorAndPostList : ", oldDropperColorAndPostList);
+
+        if (+newDropperObject.post > +oldDropperColorAndPostList[oldDropperColorAndPostList.length - 1].post) {
+            console.log("newDropperObject.post > oldDropperColorAndPostList[oldDropperColorAndPostList.length - 1].post");
+            oldDropperColorAndPostList.push(newDropperObject);
+            return oldDropperColorAndPostList;
+        }
+
         for (let i = 0; i < oldDropperColorAndPostList.length - 1; i++) {
-            // console.log(" oldDropperColorAndPostList[", i + 1, "].post : ", oldDropperColorAndPostList[i + 1].post);
-            // console.log("newDropperObject.post < oldDropperColorAndPostList[i+1].post : ", newDropperObject.post < oldDropperColorAndPostList[i + 1].post);
+            console.log("oldDropperColorAndPostList : ", oldDropperColorAndPostList[i]);
             if (+newDropperObject.post < +oldDropperColorAndPostList[i + 1].post) {
                 console.log("making insertion at index ", i + 1);
                 oldDropperColorAndPostList.splice(i + 1, 0, newDropperObject);
                 break;
             }
         }
-        console.log("oldDropperColorAndPostList  :", oldDropperColorAndPostList);
+
+        console.log("arrangeDroppers, oldDropperColorAndPostList : ", oldDropperColorAndPostList);
+
         return oldDropperColorAndPostList;
     }
 
@@ -118,7 +115,7 @@ function GradientPicker(props) {
                     })
                 }
             </DropperContainer>
-            <GradientSlider type="range" step="0.01" min="1" max="100" onChange={handleDropperPosition} value={currentPost} background={gradientValue}></GradientSlider>
+            <GradientSlider type="range" step="0.01" min="1" max="100" onChange={handleDropperPosition} value={currentPost} background={gradientString}></GradientSlider>
 
             <ChosenColorTextualDetails>
                 <AddAColor onClick={() => handleAddAColor()}>
@@ -198,7 +195,7 @@ const GradientSlider = styled.input`
     height: 7px;
     background-color: rgb(131, 122, 122);
     background-image:
-        linear-gradient(${(props) => props.backgroundColor});
+        linear-gradient(90deg, ${(props) => props.background});
     
     &::-webkit-slider-thumb {
         -webkit-appearance: none;
