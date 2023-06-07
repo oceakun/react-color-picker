@@ -16,10 +16,10 @@ function App() {
   return (
     <AppContainer>
 
-      <ColorOutputs>
+      {/* <ColorOutputs>
         <SolidColorSection background={colorPicked} ></SolidColorSection>
         <GradientSection background={gradientPicked}></GradientSection>
-      </ColorOutputs>
+      </ColorOutputs> */}
 
       <Picker>
         <Header>
@@ -45,7 +45,7 @@ const Picker = styled.div`
   padding:10px;
   background-color:white;
   border-radius: 10px;
-  margin-top:10px;
+  // margin-top:10px;
 `;
 
 const ColorOutputs = styled.div`
@@ -80,5 +80,9 @@ const Header = styled.div`
   }
   >span{
     color: rgba(60, 60, 67, 0.6);
+  }
+  >span:hover{
+    cursor:pointer;
+    color: rgba(60, 60, 67, 0.8);
   }
 `;
