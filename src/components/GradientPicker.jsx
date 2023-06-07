@@ -6,12 +6,11 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 function GradientPicker(props) {
 
     const [currentPost, setCurrentPost] = useState();
-    const [dropperSelected, setDropperSelected] = useState();
-    const [dropperColorAndPost, setDropperColorAndPost] = useState([{ post: "0", color: "rgba(16,16,16,0)" }, { post: "100", color: "rgba(16,16,16,1)" }]);
+    const [dropperSelected, setDropperSelected] = useState(1);
+    const [dropperColorAndPost, setDropperColorAndPost] = useState([{ post: "0", color: "rgba(16,16,16,0)", shadow: "#DCDCDC" }, { post: "100", color: "rgba(16,16,16,1)", shadow: "#0061FD" }]);
     const [gradientString, setGradientString] = useState("rgba(16,16,16,0) 0%,rgba(16,16,16,1) 100%");
 
     useEffect(() => {
-
         const gradientValuesArray = [];
         const oldDropperColorAndPostList = [...dropperColorAndPost];
 
@@ -23,18 +22,30 @@ function GradientPicker(props) {
         });
 
         const gradientString = gradientValuesArray.join();
-        console.log("gradientString (output): ", gradientString);
         setGradientString(gradientString);
-        
+
         props.setGradientPicked(gradientString);
     }, [dropperColorAndPost]);
 
     const handleDropperPosition = (event) => {
         const newPost = event.target.value;
-        const newDropperObject = { post: newPost, color: "" };
+        const newDropperObject = { post: newPost, color: "", shadow: "#0061FD" };
         const oldDropperColorAndPostList = [...dropperColorAndPost];
+
+        oldDropperColorAndPostList.map((dropper, index) => {
+            dropper.shadow = "#DCDCDC";
+        })
+
         const newDropperColorAndPostList = arrangeDroppers(newDropperObject, oldDropperColorAndPostList);
-        console.log("newDropperColorAndPostList : ", newDropperColorAndPostList);
+
+        let feedThisDropper;
+        for (let i = 0; i < newDropperColorAndPostList.length; i++) {
+            if (newDropperColorAndPostList[i] == newDropperObject) {
+                feedThisDropper = i;
+            }
+        }
+
+        setDropperSelected(feedThisDropper);
         setDropperColorAndPost(newDropperColorAndPostList);
     }
 
@@ -48,13 +59,13 @@ function GradientPicker(props) {
             return;
         }
 
-        const dropperPosition = dropperSelected;
+        const dropperIndex = dropperSelected;
         const dropperColor = props.color;
 
         const newDropperColorAndPost = [...dropperColorAndPost];
 
         newDropperColorAndPost.map((dropper, index) => {
-            if (index == dropperPosition) {
+            if (index == dropperIndex) {
                 dropper.color = dropperColor;
             }
         })
@@ -67,6 +78,10 @@ function GradientPicker(props) {
             console.log("no dropper selected");
             return;
         }
+        if (dropperSelected === 0) {
+            console.log("can't delete original dropper");
+            return;
+        }
 
         const removeIndex = dropperSelected;
         const deepCopyDropperColorAndPost = [...dropperColorAndPost];
@@ -77,29 +92,37 @@ function GradientPicker(props) {
 
     const handleDropperSelection = (dropper, e) => {
         const feedThisDropper = dropper;
+
+        const newDropperColorAndPost = [...dropperColorAndPost];
+
+        newDropperColorAndPost.map((dropper, index) => {
+            if (index == feedThisDropper) {
+                dropper.shadow = "#0061FD";
+            }
+            else {
+                dropper.shadow = "#DCDCDC";
+            }
+        })
+        setDropperColorAndPost(newDropperColorAndPost);
+
+
+
         setDropperSelected(feedThisDropper);
     }
 
     const arrangeDroppers = (newDropperObject, oldDropperColorAndPostList) => {
 
-        console.log("arrangeDroppers, oldDropperColorAndPostList : ", oldDropperColorAndPostList);
-
         if (+newDropperObject.post > +oldDropperColorAndPostList[oldDropperColorAndPostList.length - 1].post) {
-            console.log("newDropperObject.post > oldDropperColorAndPostList[oldDropperColorAndPostList.length - 1].post");
             oldDropperColorAndPostList.push(newDropperObject);
             return oldDropperColorAndPostList;
         }
 
         for (let i = 0; i < oldDropperColorAndPostList.length - 1; i++) {
-            console.log("oldDropperColorAndPostList : ", oldDropperColorAndPostList[i]);
             if (+newDropperObject.post < +oldDropperColorAndPostList[i + 1].post) {
-                console.log("making insertion at index ", i + 1);
                 oldDropperColorAndPostList.splice(i + 1, 0, newDropperObject);
                 break;
             }
         }
-
-        console.log("arrangeDroppers, oldDropperColorAndPostList : ", oldDropperColorAndPostList);
 
         return oldDropperColorAndPostList;
     }
@@ -110,7 +133,7 @@ function GradientPicker(props) {
                 {
                     dropperColorAndPost.map((dropper, index) => {
                         return (
-                            <Dropper key={index} paddingLeft={dropper.post} backgroundColor={dropper.color} onClick={(event) => handleDropperSelection(index, event)}></Dropper>
+                            <Dropper key={index} paddingLeft={dropper.post} backgroundColor={dropper.color} onClick={(event) => handleDropperSelection(index, event)} shadowColor={dropper.shadow}></Dropper>
                         )
                     })
                 }
@@ -140,7 +163,7 @@ const LinearGradientConfigOptionsWrapper = styled.div`
   justify-content:center;
   align-items:center;
   gap:10px;
-  margin-top:25px;
+  margin-top:10px;
 `;
 
 const DropperContainer = styled.div`
@@ -160,7 +183,7 @@ position:absolute;
 z-index:2;
 border:4px solid white;
 border-radius:50%;
-box-shadow: 0 0 0 1px #DCDCDC;
+box-shadow: 0 0 2px 1px  ${(props) => props.shadowColor};
 
 &::after{
     content: "";
@@ -176,13 +199,14 @@ box-shadow: 0 0 0 1px #DCDCDC;
 
 &:hover{
     cursor:pointer;
-    box-shadow: 0 0 4px 1px #DCDCDC;;
+    box-shadow: 0 0 2px 1px ${(props) => props.shadowColor};
+    // box-shadow: 0 0 2px 1px #0061FD;
 }
 
-&:active{
-    cursor:pointer;
-    box-shadow: 0 0 4px 1px black;
-}
+// &:active{
+//     cursor:pointer;
+//     box-shadow: 0 0 4px 1px black;
+// }
 `;
 
 const GradientSlider = styled.input`
@@ -194,15 +218,20 @@ const GradientSlider = styled.input`
     border-radius: 15px;
     height: 7px;
     background-color: rgb(131, 122, 122);
-    background-image:
-        linear-gradient(90deg, ${(props) => props.background});
+    background-image: linear-gradient(90deg, ${(props) => props.background});
     
     &::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
+        height: 18px;
+        width: 18px;
+        background-color: transparent;
+        border: none;
+        border-radius:5px;
     }
 
     &::-moz-range-thumb {
+        -moz-appearance: none;
         display:none;
         height: 18px;
         width: 18px;
