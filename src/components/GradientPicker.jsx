@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import styled from "styled-components"
 import AddIcon from '@mui/icons-material/Add';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import Draggable from 'react-draggable';
 
 function GradientPicker(props) {
 
@@ -9,6 +10,7 @@ function GradientPicker(props) {
     const [dropperSelected, setDropperSelected] = useState(1);
     const [dropperColorAndPost, setDropperColorAndPost] = useState([{ post: "0", color: "rgba(16,16,16,0)", shadow: "#DCDCDC" }, { post: "100", color: "rgba(16,16,16,1)", shadow: "#0061FD" }]);
     const [gradientString, setGradientString] = useState("rgba(16,16,16,0) 0%,rgba(16,16,16,1) 100%");
+    const [deltaPosition, setDeltaPosition] = useState({ x: 0, y: 0 });
 
     useEffect(() => {
         const gradientValuesArray = [];
@@ -127,18 +129,36 @@ function GradientPicker(props) {
         return oldDropperColorAndPostList;
     }
 
+    const handleDrag = (e, ui) => {
+        console.log("ui : ", ui);
+        // setDeltaPosition({ ...deltaPosition }, {
+        //     x: x + ui.deltaX
+        // }, {
+        //     y: y + ui.deltaY,
+
+        // });
+    };
+
     return (
         <LinearGradientConfigOptionsWrapper>
             <DropperContainer>
                 {
                     dropperColorAndPost.map((dropper, index) => {
+                        // console.log("dropper.post : ", dropper.post);
+                        const fromLeft = -3.03 * (Math.trunc(+dropper.post));
+                        const fromRight = 3.03 * (Math.trunc(100 - (+dropper.post)));
+                        // console.log("fromLeft : ", fromLeft);
+                        // console.log("fromRight : ", fromRight);
                         return (
-                            <Dropper key={index} paddingLeft={dropper.post} backgroundColor={dropper.color} onClick={(event) => handleDropperSelection(index, event)} shadowColor={dropper.shadow}></Dropper>
+                            <Draggable key={index} axis="x" bounds={{ left: fromLeft , right: fromRight, top: 0, bottom: 0 }} onDrag={handleDrag}>
+                                <Dropper key={index} paddingLeft={dropper.post} backgroundColor={dropper.color} onClick={(event) => handleDropperSelection(index, event)} shadowColor={dropper.shadow}>
+                                </Dropper>
+                            </Draggable>
                         )
                     })
                 }
             </DropperContainer>
-            <GradientSlider type="range" step="0.01" min="1" max="100" onChange={handleDropperPosition} value={currentPost} background={gradientString}></GradientSlider>
+            <GradientSlider type="range" step="0.01" min="1" max="100" onInput={handleDropperPosition} value={currentPost} background={gradientString}></GradientSlider>
 
             <ChosenColorTextualDetails>
                 <AddAColor onClick={() => handleAddAColor()}>
