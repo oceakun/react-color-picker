@@ -4,3 +4,23 @@
   padding: 2rem;
   text-align: center;
 }
+
+/* input[type=range] {
+  pointer-events: none;
+} */
+
+/* input[type=range]::-webkit-slider-runnable-track {
+  pointer-events: auto;
+}
+
+input[type=range]::-moz-slider-runnable-track {
+  pointer-events: auto;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  pointer-events: none;
+}
+
+input[type=range]::-moz-range-thumb {
+  pointer-events: none;
+} */
