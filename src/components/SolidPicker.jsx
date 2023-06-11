@@ -101,6 +101,7 @@ function SolidPicker(props) {
     }
 
     setPickerAttributes({ ...pickerAttributes, hex: color });
+    props.setHexCodeForColorPicked(color);
     setVisitedColors([...visitedColors, color]);
   }
 
@@ -108,6 +109,7 @@ function SolidPicker(props) {
     setOpacity(event.target.value);
     const newOpacity = event.target.value;
     setOpacity(newOpacity);
+    props.setOpacity(newOpacity);
     const rgbValue = hexRgb(pickerAttributes.hex);
     const newOpacityAppliedColor = `rgba(${rgbValue.red},${rgbValue.green},${rgbValue.blue},${newOpacity})`;
     setCurrentColor(newOpacityAppliedColor);
@@ -162,9 +164,7 @@ function SolidPicker(props) {
         }
       </GithubColorsWrapper>
 
-      {/* <OpacitySlider> */}
       <OpacitySlider id="range" type="range" step="0.01" min="0" max="1" onChange={handleOpacityChange} value={opacity} />
-      {/* </OpacitySlider> */}
 
       <ChosenColorTextualDetails>
         <p style={{ color: "black" }}>Hex</p>
@@ -229,11 +229,6 @@ const ChosenColorTextualDetails = styled.div`
 `;
 
 const ColorChosen = styled.div
-  // .attrs(props => ({
-  //   style: {
-  //     background: props.colorChosen,
-  //   },
-  // }))
   `
   width: 65px;
   height:65px;
@@ -352,29 +347,3 @@ const ColorCircle = styled.span`
     box-shadow: inset 0 0 0 3px ${(props) => props.background},inset 0 0 0 5px white;
   }
 `;
-
-// const Swatch = styled.div`
-//   padding: 5px;
-//   background: #fff;
-//   border-radius: 1px;
-//   box-shadow: 0 0 0 1px rgba(0, 0, 0, .1);
-//   display: inline - block;
-//   cursor: pointer;
-// `;
-
-// const Popover = styled.div`
-//   position: absolute;
-//   z - index: 2;
-//   bckground-color:blue;
-//   paddding:20px;
-//   width:3000px;
-// `
-
-// const Cover = styled.div`
-//   position: fixed;
-//   top: 0px;
-//   right: 0px;
-//   bottom: 0px;
-//   left: 0px;
-// `
-
