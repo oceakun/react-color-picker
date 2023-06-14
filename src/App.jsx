@@ -66,11 +66,14 @@ const AppContainer = styled.div`
   >span{
     border:1px solid black;
     border-radius:5px;
-    padding:0 12px;
+    padding:0 2px;
+    background:black;
+    color:white;
   }
   >span:hover{
     cursor:pointer;
-    background:gray;
+    color:black;
+    background:white;
   }
 `;
 
