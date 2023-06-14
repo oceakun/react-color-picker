@@ -1,44 +1,53 @@
-import { useEffect, useState } from 'react'
-import styled from "styled-components"
-import './App.css'
-import SolidPicker from './components/SolidPicker'
-import GradientPicker from './components/GradientPicker'
-import ShadePicker from './components/ShadePicker'
-import CancelIcon from '@mui/icons-material/Cancel';
+import { useEffect, useState } from 'react';
+import styled from "styled-components";
+import Picker from "./containers/Picker";
 import hexRgb from 'hex-rgb';
-
+import ColorizeIcon from '@mui/icons-material/Colorize';
 
 function App() {
-  const [colorPicked, setColorPicked] = useState("rgba(16,16,16,1)");
-  const [hexCodeForColorPicked, setHexCodeForColorPicked] = useState("#101010");
-  const [gradientPicked, setGradientPicked] = useState([]);
-  const [shadesPicked, setShadesPicked] = useState([]);
+
+  const [hexCodeForMainColor, setHexCodeForMainColor] = useState("#101010");
+  const [shades, setShades] = useState([]);
+  const [pickerVisibility, setPickerVisibility] = useState("visible");
   const [opacity, setOpacity] = useState(1);
-  const [gradientForShadePicker, setGradientForShadePicker] = useState("rgba(16,16,16,0) 0%, rgba(16,16,16,1) 100%");
 
-  useEffect(() => {
-    // console.log("shadesPicked : ", shadesPicked);
-    // console.log("colorPicked : ", colorPicked);
-  }, [colorPicked, shadesPicked]);
-
-  useEffect(() => {
-    const rgbValue = hexRgb(hexCodeForColorPicked);
-    const extremeLeftShade = `rgba(${rgbValue.red},${rgbValue.green},${rgbValue.blue},0)`;
-    const extremeRightShade = `rgba(${rgbValue.red},${rgbValue.green},${rgbValue.blue},${opacity})`;
-    setGradientForShadePicker(`${extremeLeftShade} 0%, ${extremeRightShade} 100%`);
-  }, [hexCodeForColorPicked, opacity]);
+  const handlePickerVisibility = ()=>{
+    // console.log("handlePickerVisibility");
+    if(pickerVisibility=="hidden")
+    setPickerVisibility("visible");
+    else
+    setPickerVisibility("hidden");
+  }
 
   return (
     <AppContainer>
-      <Picker>
-        <Header>
-          <p>Colors</p>
-          <span><CancelIcon /></span>
-        </Header>
-        {/* <GradientPicker setGradientPicked={setGradientPicked} color={colorPicked} /> */}
-        <ShadePicker gradientForShadePicker={gradientForShadePicker} hexCodeForColorPicked={hexCodeForColorPicked} setShadesPicked={setShadesPicked} color={colorPicked} opacity={opacity} />
-        <SolidPicker setHexCodeForColorPicked={setHexCodeForColorPicked} setColorPicked={setColorPicked} setOpacity={setOpacity} />
-      </Picker>
+      <span onClick={()=>handlePickerVisibility()}><ColorizeIcon/></span>
+
+      <MainColorContainer>
+        <legend>Color</legend>
+        <ColorSquare background={hexCodeForMainColor}/>
+        <span>{hexCodeForMainColor}</span>
+      </MainColorContainer>
+
+      <ShadesContainer>
+        <legend>Shades</legend>
+        {
+          shades.map((shade, index)=>{
+
+            const rgbValue = hexRgb(hexCodeForMainColor);
+            const currentShade = `rgba(${rgbValue.red},${rgbValue.green},${rgbValue.blue},${(+shade.post/100 * opacity).toFixed(2)})`;
+            return (
+              <EachShade key={index}>
+              <ColorSquare background={currentShade}/>
+              <span>{currentShade}</span>
+              </EachShade>
+            )
+          })
+        }
+      </ShadesContainer>
+
+      <Picker setHexCodeForMainColor={setHexCodeForMainColor} setShades={setShades} visibility={pickerVisibility} setPickerVisibility={setPickerVisibility} opacity={opacity} setOpacity={setOpacity}/>
+
     </AppContainer>
   )
 }
@@ -46,30 +55,71 @@ function App() {
 export default App
 
 const AppContainer = styled.div`
-  background-color:transparent;
-  border:none;
-`;
-
-const Picker = styled.div`
-  padding:10px;
-  background-color:white;
-  border-radius: 10px;
-`;
-
-const Header = styled.div`
+  margin-top:-400px;
+  margin-left:20px;
+  background:transparent;
   display:flex;
-  flex-flow:row nowrap;
-  justify-content:space-between;
-  align-items:center;
-  // gap:30px;
-  >p{
-    color : #3B3B3B;
-  }
+  flex-flow:column nowrap;
+  justify-content:flex-start;
+  align-items:flex-start;
+  gap:20px;
   >span{
-    color: rgba(60, 60, 67, 0.6);
+    border:1px solid black;
+    border-radius:5px;
+    padding:0 12px;
   }
   >span:hover{
     cursor:pointer;
-    color: rgba(60, 60, 67, 0.8);
+    background:gray;
   }
+`;
+
+const MainColorContainer = styled.fieldset`
+display:flex;
+flex-flow:row nowrap;
+justify-content:center;
+align-items:center;
+gap:10px;
+border:1px solid gray;
+border-radius:4px;
+background:white;
+>legend{
+  color:black;
+}
+>span{
+  color:blue;
+}
+`;
+
+const ColorSquare = styled.span`
+  width: 23.25px;
+  height: 22.5px;
+  background: ${(props) => props.background};
+`;
+
+const EachShade = styled.span`
+display:flex;
+flex-flow:row nowrap;
+justify-content:center;
+align-items:center;
+gap:10px;
+`;
+
+const ShadesContainer = styled.fieldset`
+display:flex;
+flex-flow:column wrap;
+justify-content:flex-start;
+align-items:flex-start;
+gap:10px;
+border:1px solid gray;
+border-radius:4px;
+background:white;
+width:200px;
+height:320px;
+>legend{
+  color:black;
+}
+>span{
+  color:blue;
+}
 `;
