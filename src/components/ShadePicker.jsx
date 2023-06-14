@@ -12,8 +12,26 @@ function ShadePicker(props) {
     const [dropperShadowAndPost, setDropperShadowAndPost] = useState([{ post: "0", shadow: "#DCDCDC" }]);
 
     useEffect(() => {
-        props.setShadesPicked(dropperShadowAndPost);
+        props.setShades(dropperShadowAndPost);
     }, [dropperShadowAndPost]);
+
+    // useEffect(() => {
+
+    //     console.log("props.opacity : ", props.opacity);
+    //     const newDropperShadowAndPost = [...dropperShadowAndPost];
+
+    //     newDropperShadowAndPost.map((dropper, index) => {
+    //         const newPosition = (+dropper.post*(props.opacity)).toFixed(2);
+    //         console.log("newPosition  : ", newPosition);
+    //         dropper = {...dropper,post:`${newPosition}`};
+    //         console.log("dropper : ", dropper);
+    //   })
+
+    //   console.log("newDropperShadowAndPost : ", newDropperShadowAndPost);
+
+    //   setDropperShadowAndPost(newDropperShadowAndPost);
+
+    // }, [props.opacity]);
 
     const handleDropperPosition = (event) => {
         const newPost = event.target.value;
@@ -154,7 +172,7 @@ function ShadePicker(props) {
                         const fromRight = 3.03 * (Math.trunc(100 - (+dropper.post)));
                         // console.log("fromLeft : ", fromLeft);
                         // console.log("fromRight : ", fromRight);
-                        const dropperBackgroundRgb = hexRgb(props.hexCodeForColorPicked);
+                        const dropperBackgroundRgb = hexRgb(props.hexCodeForMainColor);
                         // console.log("opacity : ", props.opacity);
                         const dropperBackgroundOpacity = (((+dropper.post) / 100) * (props.opacity)).toFixed(2);
                         const dropperBackground = `rgba(${dropperBackgroundRgb.red},${dropperBackgroundRgb.green},${dropperBackgroundRgb.blue}, ${dropperBackgroundOpacity})`;
@@ -170,7 +188,7 @@ function ShadePicker(props) {
                 }
 
             </DropperContainer>
-            <GradientSlider disable={true} type="range" step="0.01" min="0" max="100" onInput={handleDropperPosition} value={currentPost} borderColor={props.hexCodeForColorPicked} background={props.gradientForShadePicker}></GradientSlider>
+            <GradientSlider disable={true} type="range" step="0.01" min="0" max="100" onInput={handleDropperPosition} value={currentPost} borderColor={props.hexCodeForMainColor} background={props.gradientForShadePicker}></GradientSlider>
 
             <ChosenColorTextualDetails>
                 <AddAColor onClick={() => handleColorAddition()}>
@@ -251,7 +269,7 @@ const GradientSlider = styled.input`
     height: 7px;
     background-color: white;
     background-image: linear-gradient(90deg, ${(props) => props.background});
-    border:1px solid  ${(props) => props.borderColor};
+    border:none;
     pointer-events:none;
     
     &::-webkit-slider-thumb {

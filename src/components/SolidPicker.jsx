@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from "styled-components";
 import hexRgb from 'hex-rgb';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 function SolidPicker(props) {
   const [pickerAttributes, setPickerAttributes] = useState({
@@ -55,7 +56,7 @@ function SolidPicker(props) {
   }, [currentColor]);
 
   const handleColorChoice = (colorIndex, color, event) => {
-
+    
     const eventId = event.target.id;
     const oldCirclePickerColorsSpread = [...circlePickerColorsSpread];
     const oldGithubColorsBorders = [...githubColorsBorders];
@@ -101,7 +102,7 @@ function SolidPicker(props) {
     }
 
     setPickerAttributes({ ...pickerAttributes, hex: color });
-    props.setHexCodeForColorPicked(color);
+    props.setHexCodeForMainColor(color);
     setVisitedColors([...visitedColors, color]);
   }
 
@@ -179,7 +180,7 @@ function SolidPicker(props) {
               if (color === "rgba(0, 0, 0, 0.15)")
                 return (
                   <AddRecentColor onClick={() => handleLoadMostRecentColor()} key={index} >
-                    +
+                    <AddCircleOutlineIcon/>
                   </AddRecentColor>
                 )
               else
@@ -278,7 +279,7 @@ const OpacitySlider = styled.input`
         background-color: rgb(80, 78, 77);
         border-radius: 50%;
         border: 4px solid rgb(255, 255, 255);
-        transition: .2s ease-in-out;
+        // transition: .2s ease-in-out;
     }
 
     &::-moz-range-thumb {
@@ -287,7 +288,7 @@ const OpacitySlider = styled.input`
         background-color: rgb(80, 78, 77);
         border-radius: 50%;
         border: 4px solid rgb(255, 255, 255);
-        transition: .2s ease-in-out;
+        // transition: .2s ease-in-out;
     }
   `;
 
@@ -325,13 +326,16 @@ const RecentColorsWrapper = styled.div`
 const AddRecentColor = styled.div`
   width: 23px;
   height: 23px;
-  // background: rgba(0, 0, 0, 0.25);
-  border:1px solid rgba(0, 0, 0, 0.25);
+  // border:1px solid rgba(0, 0, 0, 0.25);
   color:rgba(60, 60, 67, 0.6);
   border-radius:50%;
+  // font-size:29px;
+  // padding:0 11px;
+  // margin-left:-6px;
+
   &:hover{
     cursor:pointer;
-    border:1px solid rgba(0, 0, 0, 55);
+    // border:1px solid rgba(0, 0, 0, 55);
     color:rgba(0, 0, 0, 0.7);
   }
 `;
