@@ -248,49 +248,71 @@ const GithubColorsWrapper = styled.div`
     `;
 
 const OpacitySlider = styled.input`
+  -webkit-appearance: none;
+  appearance: none;
+  width: 303px;
+  cursor: pointer;
+  outline: none;
+  border-radius: 15px;
+  height: 7px;
+  // background-color: rgb(131, 122, 122);
+  // // background-image:url("../assets/flower.jpeg");
+  // background-image:
+  //     linear-gradient(45deg, #ccc 25%, transparent 25%),
+  //     linear-gradient(-45deg, #ccc 25%, transparent 25%),
+  //     linear-gradient(45deg, transparent 75%, #ccc 75%),
+  //     linear-gradient(-45deg, transparent 75%, #ccc 75%);
+  // background-size: 5px 5px;
+  // background-position: 0 0, 0 2.5px, 2.5px -2.5px, -2.5px 0px;
+
+  background-color: #ffffff;
+  opacity: 0.4;
+  background-image: repeating-linear-gradient(
+      45deg,
+      #babbcd 25%,
+      transparent 25%,
+      transparent 75%,
+      #babbcd 75%,
+      #babbcd
+    ),
+    repeating-linear-gradient(
+      45deg,
+      #babbcd 25%,
+      #ffffff 25%,
+      #ffffff 75%,
+      #babbcd 75%,
+      #babbcd
+    );
+  background-position: 0 0, 4px 4px;
+  background-size: 8px 8px;
+
+  margin: 10px 0 12px 0;
+  &::-moz-slider-runnable-track {
+    height: 13px;
+    color: red;
+    margin-top: -1px;
+  }
+
+  &::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 303px;
-    cursor: pointer;
-    outline: none;
-    border-radius: 15px;
-    height: 7px;
-    background-color: rgb(131, 122, 122);
-    // background-image:url("../assets/flower.jpeg");
-    background-image:
-        linear-gradient(45deg, #ccc 25%, transparent 25%),
-        linear-gradient(-45deg, #ccc 25%, transparent 25%),
-        linear-gradient(45deg, transparent 75%, #ccc 75%),
-        linear-gradient(-45deg, transparent 75%, #ccc 75%);
-    background-size: 5px 5px;
-    background-position: 0 0, 0 2.5px, 2.5px -2.5px, -2.5px 0px;
-    margin:10px 0 12px 0;
-    &::-moz-slider-runnable-track {
-      height: 13px;
-      color: red;
-      margin-top: -1px;
-    }
+    height: 25px;
+    width: 25px;
+    background-color: rgb(80, 78, 77);
+    border-radius: 50%;
+    border: 4px solid rgb(255, 255, 255);
+    // transition: .2s ease-in-out;
+  }
 
-    &::-webkit-slider-thumb {
-        -webkit-appearance: none;
-        appearance: none;
-        height: 25px;
-        width: 25px;
-        background-color: rgb(80, 78, 77);
-        border-radius: 50%;
-        border: 4px solid rgb(255, 255, 255);
-        // transition: .2s ease-in-out;
-    }
-
-    &::-moz-range-thumb {
-        height: 18px;
-        width: 18px;
-        background-color: rgb(80, 78, 77);
-        border-radius: 50%;
-        border: 4px solid rgb(255, 255, 255);
-        // transition: .2s ease-in-out;
-    }
-  `;
+  &::-moz-range-thumb {
+    height: 18px;
+    width: 18px;
+    background-color: rgb(80, 78, 77);
+    border-radius: 50%;
+    border: 4px solid rgb(255, 255, 255);
+    // transition: .2s ease-in-out;
+  }
+`;
 
 const GithubColorSquare = styled.span`
   width: 23.25px;
