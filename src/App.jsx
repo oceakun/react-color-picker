@@ -3,25 +3,69 @@ import styled from "styled-components";
 import Picker from "./containers/Picker";
 import hexRgb from 'hex-rgb';
 import ColorizeIcon from '@mui/icons-material/Colorize';
-
+import { Stage, Layer, Rect, Text } from "react-konva";
+import ColoredRect from "./components/ColoredRect";
+import WaveChart from "./components/WaveChart";
+import BasicAnnotations from "./components/annotations/BasicAnnotations";
+import Formatters from "./components/labelFormat/Formatters";
 function App() {
-
   const [hexCodeForMainColor, setHexCodeForMainColor] = useState("#101010");
   const [shades, setShades] = useState([]);
-  const [pickerVisibility, setPickerVisibility] = useState("visible");
+  const [pickerVisibility, setPickerVisibility] = useState("block");
   const [opacity, setOpacity] = useState(1);
 
-  const handlePickerVisibility = ()=>{
+  const inputData = [
+    {
+      today: [
+        { value: 2, text: "Sam" },
+        { value: 4, text: "Sam" },
+        { value: 1, text: "Sam" },
+        { value: 0, text: "Sam" },
+        { value: 5, text: "Sam" },
+        { value: 9, text: "Sam" },
+        { value: 8, text: "Sam" },
+        { value: 7, text: "Sam" },
+      ],
+    },
+    {
+      yesterday: [
+        { value: 3, text: "Sam" },
+        { value: 4, text: "Sam" },
+        { value: 6, text: "Sam" },
+        { value: 2, text: "Sam" },
+        { value: 7, text: "Sam" },
+        { value: 8, text: "Sam" },
+        { value: 3, text: "Sam" },
+        { value: 6, text: "Sam" },
+      ],
+    },
+    {
+      tomorrow: [
+        { value: 4, text: "Sam" },
+        { value: 5, text: "Sam" },
+        { value: 10, text: "Sam" },
+        { value: 6, text: "Sam" },
+        { value: 3, text: "Sam" },
+        { value: 7, text: "Sam" },
+        { value: 0, text: "Sam" },
+        { value: 5, text: "Sam" },
+      ],
+    },
+  ];
+  const handlePickerVisibility = () => {
     // console.log("handlePickerVisibility");
-    if(pickerVisibility=="hidden")
-    setPickerVisibility("visible");
-    else
-    setPickerVisibility("hidden");
-  }
+    if (pickerVisibility == "hidden") setPickerVisibility("visible");
+    else setPickerVisibility("hidden");
+  };
 
   return (
     <AppContainer>
-      <span onClick={()=>handlePickerVisibility()}><ColorizeIcon/></span>
+      <Formatters />
+      <BasicAnnotations />
+      <WaveChart data={inputData} />
+      {/* <ColoredRect /> */}
+
+      {/* <span onClick={()=>handlePickerVisibility()}><ColorizeIcon/></span>
 
       <MainColorContainer>
         <legend>Color</legend>
@@ -46,34 +90,31 @@ function App() {
         }
       </ShadesContainer>
 
-      <Picker setHexCodeForMainColor={setHexCodeForMainColor} setShades={setShades} visibility={pickerVisibility} setPickerVisibility={setPickerVisibility} opacity={opacity} setOpacity={setOpacity}/>
-
+      <Picker setHexCodeForMainColor={setHexCodeForMainColor} setShades={setShades} visibility={pickerVisibility} setPickerVisibility={setPickerVisibility} opacity={opacity} setOpacity={setOpacity}/> */}
     </AppContainer>
-  )
+  );
 }
 
-export default App
+export default App;
 
 const AppContainer = styled.div`
-  margin-top:-400px;
-  margin-left:20px;
-  background:transparent;
-  display:flex;
-  flex-flow:column nowrap;
-  justify-content:flex-start;
-  align-items:flex-start;
-  gap:20px;
-  >span{
-    border:1px solid black;
-    border-radius:5px;
-    padding:0 2px;
-    background:black;
-    color:white;
+  background: transparent;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 20px;
+  > span {
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 0 2px;
+    background: black;
+    color: white;
   }
-  >span:hover{
-    cursor:pointer;
-    color:black;
-    background:white;
+  > span:hover {
+    cursor: pointer;
+    color: black;
+    background: white;
   }
 `;
 
